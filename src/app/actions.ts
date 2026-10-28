@@ -10,14 +10,42 @@ export async function submitClaim(formData: FormData) {
     title: formData.get("title"),
     sourceUrl: formData.get("sourceUrl") ?? "",
     platform: formData.get("platform") ?? "other",
-    categoryId: formData.get("categoryId"),
+    categoryId: formData.get("categoryId") ?? "",
+    newCategory: formData.get("newCategory") ?? "",
   });
   if (!parsed.success) {
     return { ok: false, error: "Invalid input." };
   }
-  const { title, sourceUrl, platform, categoryId } = parsed.data;
+  const { title, sourceUrl, platform, categoryId, newCategory } = parsed.data;
 
   const supabase = await createClient();
+
+  let resolvedCategoryId = categoryId || null;
+  if (!resolvedCategoryId && newCategory) {
+    const slug = newCategory
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+    // reuse existing if slug matches
+    const { data: existing } = await supabase
+      .from("categories")
+      .select("id")
+      .eq("slug", slug)
+      .maybeSingle();
+    if (existing) {
+      resolvedCategoryId = existing.id;
+    } else {
+      const { data: created, error: catErr } = await supabase
+        .from("categories")
+        .insert({ name: newCategory.trim(), slug })
+        .select("id")
+        .single();
+      if (catErr || !created) return { ok: false, error: catErr?.message ?? "Category create failed." };
+      resolvedCategoryId = created.id;
+    }
+  }
+  if (!resolvedCategoryId) return { ok: false, error: "Pick or create a category." };
 
   let imageUrl: string | null = null;
   const file = formData.get("image");
@@ -37,7 +65,7 @@ export async function submitClaim(formData: FormData) {
     title,
     source_url: sourceUrl || null,
     platform,
-    category_id: categoryId,
+    category_id: resolvedCategoryId,
     image_url: imageUrl,
   });
   if (error) return { ok: false, error: error.message };

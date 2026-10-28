@@ -4,7 +4,8 @@ export const submitClaimSchema = z.object({
   title: z.string().min(3).max(200),
   sourceUrl: z.string().url().optional().or(z.literal("")),
   platform: z.enum(["twitter", "reddit", "linkedin", "tiktok", "other"]).default("other"),
-  categoryId: z.string().uuid(),
+  categoryId: z.string().uuid().optional().or(z.literal("")),
+  newCategory: z.string().min(2).max(60).optional().or(z.literal("")),
 });
 
 export const voteSchema = z.object({

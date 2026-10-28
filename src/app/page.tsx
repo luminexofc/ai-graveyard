@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Tombstone } from "@/components/Tombstone";
 import { Reveal } from "@/components/Reveal";
+import { Graveyard3DLoader } from "@/components/Graveyard3DLoader";
 
 export const dynamic = "force-dynamic";
 
@@ -106,21 +106,25 @@ export default async function Home() {
         <p className="relative mt-2 text-center text-sm opacity-60">
           Solid tombstones are buried. Ghosted ones are still being voted on.
         </p>
-        <div className="relative mt-10 flex flex-wrap items-end justify-center gap-6">
-          {(categories ?? []).map((c, i) => (
-            <Link key={c.id} href={`/category/${c.slug}`} className="transition hover:scale-105">
-              <div className={c.is_buried ? "tombstone-buried" : ""}>
-                <Tombstone
-                  name={c.name}
-                  buried={c.is_buried}
-                  votes={votesByCategory.get(c.id) ?? 0}
-                  threshold={threshold}
-                  delay={i * 80}
-                />
-              </div>
-            </Link>
-          ))}
+        <div className="relative mt-10">
+          <Graveyard3DLoader
+            categories={(categories ?? []).map((c) => ({
+              name: c.name,
+              buried: c.is_buried,
+              votes: votesByCategory.get(c.id) ?? 0,
+              threshold,
+            }))}
+          />
         </div>
+        <ul className="relative mt-6 flex flex-wrap justify-center gap-2">
+          {(categories ?? []).map((c) => (
+            <li key={c.id} className="rounded border border-[var(--color-rule)] px-3 py-1 text-sm">
+              <Link href={`/category/${c.slug}`} className="hover:underline">
+                {c.name} {c.is_buried ? "🪦" : ""}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </Reveal>
 
       {/* Most killed */}
