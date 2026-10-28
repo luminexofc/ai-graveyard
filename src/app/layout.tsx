@@ -34,17 +34,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${cinzel.variable} ${atkinson.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--color-paper)] text-[var(--color-ink)]">
-        <header className="sticky top-0 z-10 border-b border-[var(--color-rule)] bg-[var(--color-paper)]/80 backdrop-blur">
+        <header className="sticky top-0 z-20 border-b border-[var(--color-rule)] bg-[var(--color-paper)]/70 backdrop-blur-md">
           <nav className="mx-auto flex max-w-5xl items-center justify-between p-4">
-            <Link href="/" className="font-bold" style={{ fontFamily: "var(--font-display)" }}>
+            <Link
+              href="/"
+              className="text-lg tracking-wide"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
               AI Graveyard
             </Link>
-            <div className="flex gap-4 text-sm">
-              <Link href="/" className="hover:text-[var(--color-accent)]">Graveyard</Link>
-              <Link href="/submit" className="hover:text-[var(--color-accent)]">Submit</Link>
-              <Link href="/browse" className="hover:text-[var(--color-accent)]">Browse</Link>
-              <Link href="/leaderboard" className="hover:text-[var(--color-accent)]">Leaderboard</Link>
-              <Link href="/about" className="hover:text-[var(--color-accent)]">About</Link>
+            <div className="flex gap-5 text-sm">
+              <Link href="/" className="opacity-80 transition hover:text-[var(--color-accent)] hover:opacity-100">Graveyard</Link>
+              <Link href="/submit" className="opacity-80 transition hover:text-[var(--color-accent)] hover:opacity-100">Submit</Link>
+              <Link href="/browse" className="opacity-80 transition hover:text-[var(--color-accent)] hover:opacity-100">Browse</Link>
+              <Link href="/leaderboard" className="opacity-80 transition hover:text-[var(--color-accent)] hover:opacity-100">Leaderboard</Link>
+              <Link href="/about" className="opacity-80 transition hover:text-[var(--color-accent)] hover:opacity-100">About</Link>
             </div>
           </nav>
         </header>

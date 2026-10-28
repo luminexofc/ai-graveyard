@@ -49,7 +49,7 @@ export default async function BrowsePage({
         ))}
       </div>
       {(submissions ?? []).length === 0 && (
-        <p className="mt-8 opacity-70">No claims yet. Be the first to bury one.</p>
+        <p className="mt-8 opacity-70">The graveyard is empty. Be the first to bury a claim.</p>
       )}
     </main>
   );

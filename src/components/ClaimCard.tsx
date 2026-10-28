@@ -13,7 +13,7 @@ type Submission = {
 
 export function ClaimCard({ s }: { s: Submission }) {
   return (
-    <article className="flex flex-col gap-3 rounded-lg border border-[var(--color-rule)] bg-[var(--color-paper)] p-4">
+    <article className="card-lift flex flex-col gap-3 rounded-lg border border-[var(--color-rule)] bg-[var(--color-paper)] p-4">
       {s.image_url && (
         <div className="relative aspect-video w-full overflow-hidden rounded">
           <Image
