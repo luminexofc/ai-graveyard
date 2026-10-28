@@ -17,11 +17,13 @@ export default async function Home() {
     .select("category_id, vote_score");
 
   const votesByCategory = new Map<string, number>();
+  const claimsByCategory = new Map<string, number>();
   for (const s of submissions ?? []) {
     votesByCategory.set(
       s.category_id,
       (votesByCategory.get(s.category_id) ?? 0) + (s.vote_score ?? 0),
     );
+    claimsByCategory.set(s.category_id, (claimsByCategory.get(s.category_id) ?? 0) + 1);
   }
 
   const threshold = Number(process.env.BURY_THRESHOLD ?? 10);
@@ -107,14 +109,22 @@ export default async function Home() {
           Solid tombstones are buried. Ghosted ones are still being voted on.
         </p>
         <div className="relative mt-10">
-          <Graveyard3DLoader
-            categories={(categories ?? []).map((c) => ({
-              name: c.name,
-              buried: c.is_buried,
-              votes: votesByCategory.get(c.id) ?? 0,
-              threshold,
-            }))}
-          />
+          {(categories ?? []).some((c) => (claimsByCategory.get(c.id) ?? 0) > 0) ? (
+            <Graveyard3DLoader
+              categories={(categories ?? [])
+                .filter((c) => (claimsByCategory.get(c.id) ?? 0) > 0)
+                .map((c) => ({
+                  name: c.name,
+                  buried: c.is_buried,
+                  votes: votesByCategory.get(c.id) ?? 0,
+                  threshold,
+                }))}
+            />
+          ) : (
+            <p className="py-12 text-center opacity-60">
+              No claims yet. Submit one to raise the first tombstone.
+            </p>
+          )}
         </div>
         <ul className="relative mt-6 flex flex-wrap justify-center gap-2">
           {(categories ?? []).map((c) => (
