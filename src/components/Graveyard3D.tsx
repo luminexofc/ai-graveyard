@@ -48,7 +48,7 @@ export function Graveyard3D({ categories }: { categories: Cat[] }) {
     <div className="relative h-[560px] w-full overflow-hidden rounded-2xl border border-[var(--color-rule)] bg-[#05050f]">
       <Canvas camera={{ position: [0, 4, 8], fov: 40 }} dpr={[1, 1.5]} shadows>
         <color attach="background" args={["#05050f"]} />
-        <fog attach="fog" args={["#05050f", 6, 18]} />
+        <fog attach="fog" args={["#05050f", 8, 32]} />
         <ambientLight intensity={0.45} />
         <directionalLight position={[5, 8, 5]} intensity={1.4} color="#e8ffe8" castShadow />
         <directionalLight position={[-6, 4, -4]} intensity={0.4} color="#8090ff" />
@@ -92,8 +92,8 @@ export function Graveyard3D({ categories }: { categories: Cat[] }) {
         <OrbitControls
           enableZoom
           enablePan={false}
-          minDistance={4}
-          maxDistance={18}
+          minDistance={3}
+          maxDistance={28}
           minPolarAngle={Math.PI / 8}
           maxPolarAngle={Math.PI / 2.4}
           autoRotate
@@ -185,6 +185,18 @@ function Tombstone3D({
           {`${votes}/${threshold}`}
         </Text>
       )}
+      {/* floating name tag (Minecraft-style) */}
+      <Text
+        position={[0, 2.05, 0]}
+        fontSize={0.2}
+        color={buried ? "#d8ffd8" : "#e0e0e0"}
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.025}
+        outlineColor="#000000"
+      >
+        {name}
+      </Text>
       {selected && (
         <mesh position={[0, 0.85, 0]}>
           <boxGeometry args={[1.15, 1.7, 0.5]} />
