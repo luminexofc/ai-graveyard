@@ -11,6 +11,20 @@ export default async function Home() {
     .select("id, name, slug, is_buried")
     .order("name");
 
+  const { data: submissions } = await supabase
+    .from("submissions")
+    .select("category_id, vote_score");
+
+  const votesByCategory = new Map<string, number>();
+  for (const s of submissions ?? []) {
+    votesByCategory.set(
+      s.category_id,
+      (votesByCategory.get(s.category_id) ?? 0) + (s.vote_score ?? 0),
+    );
+  }
+
+  const threshold = Number(process.env.BURY_THRESHOLD ?? 10);
+
   const { data: top } = await supabase
     .from("submissions")
     .select("id, title, vote_score, categories(name)")
@@ -44,28 +58,18 @@ export default async function Home() {
           Graveyard
         </h2>
         <div className="relative mt-4 flex flex-wrap items-end justify-center gap-4">
-          {(categories ?? [])
-            .filter((c) => c.is_buried)
-            .map((c, i) => (
-              <Link key={c.id} href={`/category/${c.slug}`}>
-                <Tombstone name={c.name} delay={i * 120} />
-              </Link>
-            ))}
-          {(categories ?? []).filter((c) => c.is_buried).length === 0 && (
-            <p className="opacity-70">No burials yet.</p>
-          )}
+          {(categories ?? []).map((c, i) => (
+            <Link key={c.id} href={`/category/${c.slug}`}>
+              <Tombstone
+                name={c.name}
+                buried={c.is_buried}
+                votes={votesByCategory.get(c.id) ?? 0}
+                threshold={threshold}
+                delay={i * 80}
+              />
+            </Link>
+          ))}
         </div>
-        <ul className="relative mt-6 flex flex-wrap gap-2">
-          {(categories ?? [])
-            .filter((c) => !c.is_buried)
-            .map((c) => (
-              <li key={c.id} className="rounded border border-[var(--color-rule)] px-3 py-1 text-sm">
-                <Link href={`/category/${c.slug}`} className="hover:underline">
-                  {c.name}
-                </Link>
-              </li>
-            ))}
-        </ul>
       </section>
 
       <div className="mt-6">

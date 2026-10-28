@@ -40,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               AI Graveyard
             </Link>
             <div className="flex gap-4 text-sm">
+              <Link href="/" className="hover:text-[var(--color-accent)]">Graveyard</Link>
               <Link href="/submit" className="hover:text-[var(--color-accent)]">Submit</Link>
               <Link href="/browse" className="hover:text-[var(--color-accent)]">Browse</Link>
               <Link href="/leaderboard" className="hover:text-[var(--color-accent)]">Leaderboard</Link>

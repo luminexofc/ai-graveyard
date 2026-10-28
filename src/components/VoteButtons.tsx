@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { animate } from "animejs";
 import { vote } from "@/app/actions";
 
@@ -11,6 +12,7 @@ export function VoteButtons({
   submissionId: string;
   score: number;
 }) {
+  const router = useRouter();
   const scoreRef = useRef<HTMLSpanElement>(null);
   const [pending, startTransition] = useTransition();
 
@@ -18,8 +20,9 @@ export function VoteButtons({
     const fd = new FormData();
     fd.set("submissionId", submissionId);
     fd.set("value", String(value));
-    startTransition(() => {
-      vote(fd);
+    startTransition(async () => {
+      await vote(fd);
+      router.refresh();
     });
     if (scoreRef.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       animate(scoreRef.current, {
